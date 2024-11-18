@@ -1,42 +1,41 @@
-# React TypeScript Template
+# Weather Dashboard
 
-Modern React template with TypeScript, Tailwind CSS, and essential development tools.
+A responsive weather application built with React, showing current weather and forecasts.
 
 ## Features
-- ⚡️ Vite
-- 🔷 TypeScript
-- 🎨 Tailwind CSS
-- 🌙 Dark mode support
-- 📁 Path aliases (@/)
-- 🧹 ESLint + Prettier
-- 📱 Responsive ready
+- 🌍 Automatic location detection
+- 🔍 City search functionality
+- 🌡️ Current weather display
+- 📅 5-day weather forecast
+- 🌓 Dark/Light theme support
+- 📱 Responsive design
+- ⚡ Real-time updates
+- 🔄 Loading states with skeletons
+
+## Tech Stack
+- React 18
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- React Router
+- OpenWeather API
 
 ## Getting Started
 
+### Prerequisites
+- Node.js 16+
+- pnpm
+
+### Installation
+
 ```bash
-# Clone the template
-git clone https://github.com/kPoziomek/react-template
+# Clone the repository
+git clone 
 
 # Install dependencies
 pnpm install
 
-# Start dev server
-pnpm dev
-
-# Build for production
-pnpm build
-
-```
-
-```tree
-src/
-├── components/     # Reusable components
-│   ├── ui/        # UI components
-│   └── features/  # Feature components
-├── context/       # React Context
-├── hooks/         # Custom hooks
-├── pages/         # Page components
-├── services/      # External services
-├── utils/         # Utility functions
-└── types/         # TypeScript types
+# Setup environment variables
+cp .env.example .env
+# Add your OpenWeather API key to .env
 ```
