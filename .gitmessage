@@ -1,0 +1,25 @@
+# <type>(<scope>): <short summary>
+# │       │             │
+# │       │             └─⫸ Summary in present tense. Not capitalized. No period at the end.
+# │       │
+# │       └─⫸ Commit Scope: routing|ui|store|auth|etc.
+# │
+# └─⫸ Commit Type: feat|fix|docs|style|refactor|test|chore
+#
+# Types:
+# feat     ✨ A new feature
+# fix      🐛 A bug fix
+# docs     📝 Documentation only changes
+# style    💄 Changes that do not affect the meaning of the code
+# refactor ♻️  A code change that neither fixes a bug nor adds a feature
+# test     ✅ Adding missing tests or correcting existing tests
+# chore    🔧 Changes to the build process or auxiliary tools
+#
+# Example commit messages:
+# feat(auth): add login form component
+# fix(api): handle network errors in user service
+# docs(readme): update installation guide
+# style(components): improve button styling
+# refactor(store): simplify user state management
+# test(utils): add tests for date formatter
+# chore(deps): update dependencies
