@@ -44,9 +44,16 @@ export class WeatherService {
     }
   }
 
-  private async fetchData<T>(FETCH_URL: string, city: string): Promise<T> {
+  private async fetchData<T>(
+    FETCH_URL: string,
+    city?: string,
+    lat?: number,
+    lon?: number
+  ): Promise<T> {
     try {
-      const url = `${FETCH_URL}q=${city}&appid=${API_KEY}&units=metric`
+      const params = city ? `q=${city}` : `lat=${lat}&lon=${lon}`
+
+      const url = `${FETCH_URL}${params}&appid=${API_KEY}&units=metric`
       const response = await fetch(url)
 
       if (!response.ok) {
@@ -61,9 +68,9 @@ export class WeatherService {
     }
   }
 
-  async getCurrentCity(city: string): Promise<WeatherData> {
+  async getCurrentCity(lat: number, lon: number): Promise<WeatherData> {
     try {
-      const data = await this.fetchData<OpenWeatherResponse>(this.BASE_URL, city)
+      const data = await this.fetchData<OpenWeatherResponse>(this.BASE_URL, undefined, lat, lon)
       return this.mapWeatherData(data)
     } catch (error) {
       throw error
@@ -76,6 +83,7 @@ export class WeatherService {
       current: {
         temp: Math.round(data?.main?.temp) || 0,
         humidity: data.main.humidity,
+        feelsLike: Math.round(data.main.feels_like),
         windSpeed: Math.round(data.wind.speed * 10) / 10,
         condition: data.weather[0].main,
         icon: this.getIconUrl(data.weather[0].icon)
