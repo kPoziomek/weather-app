@@ -1,80 +1,66 @@
 import { ThemeToggle } from '@/components/features/ThemeToggle.tsx'
-import { useState } from 'react'
-import { WeatherData } from '@/types/weather.tsx'
-import { weatherService } from '@/services/weather.ts'
+
 import { Button } from '@/components/ui/button.tsx'
+import { useGeolocation } from 'react-use'
+import { useWeather } from '@/hooks/useWeather.ts'
+import { CurrentWeather } from '@/components/features/CurrentWeather.tsx'
+import { Input } from '@/components/ui/input.tsx'
+import { Label } from '@/components/ui/label.tsx'
+import { CurrentWeatherSkeleton } from '@/components/features/CurrentWeatherSkeleton.tsx'
+import { useEffect } from 'react'
 
 export const HomePage = () => {
-  const [weather, setWeather] = useState<WeatherData | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const state = useGeolocation()
 
-  const fetchWeather = async (city: string) => {
-    try {
-      setIsLoading(true)
-      setError(null)
-      const data = await weatherService.getCurrentWeather(city)
-      if (!data) {
-        setError('No data available')
-        return
-      }
-      setWeather(data)
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'An error occurred')
-    } finally {
-      setIsLoading(false)
+  const { latitude, longitude } = state
+
+  const { weather, error, isLoading, fetchByCity, featchByCoords } = useWeather()
+
+  useEffect(() => {
+    if (latitude && longitude) {
+      featchByCoords(latitude, longitude)
     }
-  }
+  }, [latitude, longitude])
 
   return (
-    <div className="min-h-screen p-4 transition-colors duration-200 dark:bg-gray-900">
-      <div className="max-w-md mx-auto">
-        <ThemeToggle />
-
-        <h1 className="text-3xl font-semibold text-center">Weather</h1>
-
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            const formData = new FormData(e.currentTarget)
-            const city = formData.get('city') as string
-            fetchWeather(city)
-          }}
-          className="mt-4"
-        >
-          <label className="block">
-            <span className="text-gray-700">City</span>
-            <input
-              type="text"
-              name="city"
-              className="mt-1 block w-full rounded-md dark:bg-gray-800"
-              placeholder="Enter a city"
-              required
-            />
-          </label>
-          <Button type="submit" className="mt-2 px-4 py-2" disabled={isLoading}>
-            {isLoading ? 'Loading...' : 'Get Weather'}
-          </Button>
-
-          {error && <p className="mt-4 text-red-500">{error}</p>}
-        </form>
-
-        {weather && (
-          <div className="mt-8 p-4 bg-gray-100 dark:bg-gray-800 rounded-md">
-            <h2 className="text-xl font-semibold">{weather.city}</h2>
-            <div className="mt-4 flex items-center justify-between">
-              <div>
-                <p className="text-2xl font-semibold">{weather.current.temp}°C</p>
-                <p>{weather.current.condition}</p>
-              </div>
-              <img
-                src={weather.current.icon}
-                alt={weather.current.condition}
-                className="w-12 h-12"
-              />
-            </div>
+    <div className="min-h-screen">
+      <div className="w-full max-w-md mx-auto p-4">
+        <div className="rounded-lg bg-background shadow-lg p-6">
+          <div className="flex justify-end">
+            <ThemeToggle />
           </div>
-        )}
+
+          <h1 className="text-3xl font-semibold text-center">Weather App</h1>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              const formData = new FormData(e.currentTarget)
+              const city = formData.get('city') as string
+              fetchByCity(city)
+            }}
+            className="my-4"
+          >
+            <div className="flex w-full max-w-sm items-end space-x-2">
+              <div className="grid w-full max-w-sm items-center gap-1.5">
+                <Label htmlFor="City">City</Label>
+                <Input
+                  type="text"
+                  name="city"
+                  className="mt-1 block w-full rounded-md dark:bg-gray-800"
+                  placeholder="Enter a city"
+                  required
+                />
+              </div>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? 'Loading...' : 'Get Weather'}
+              </Button>
+            </div>
+            {error && <p className="mt-4 text-red-500">{error}</p>}
+          </form>
+          {isLoading && <CurrentWeatherSkeleton />}
+          {weather && <CurrentWeather weather={weather} />}
+        </div>
       </div>
     </div>
   )
